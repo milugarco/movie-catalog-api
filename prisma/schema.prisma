@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String?
+  email     String    @unique
+  password  String?
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@map("users")
+}
+
+model Movie {
+  id        String    @id @default(uuid())
+  slug      String    @unique
+  title     String    @unique
+  plot      String
+  director  String
+  debut     String
+  ageRating Int       @map("age_rating")
+  duration  Int
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  movieFully      MovieFully[]
+  movieCategories MovieCategory[]
+
+  @@map("movies")
+}
+
+model MovieFully {
+  id      Int    @id @default(autoincrement())
+  movieId String @unique @map("movie_id")
+  text    String
+
+  movie Movie @relation(fields: [movieId], references: [id])
+
+  @@map("movie_fully")
+}
+
+model MovieCategory {
+  id       Int      @id @default(autoincrement())
+  movieId  String   @map("movie_id")
+  category Category
+
+  movie Movie @relation(fields: [movieId], references: [id])
+
+  @@map("movie_categories")
+}
+
+enum Category {
+  ACTION
+  ADVENTURE
+  ANIMATION
+  BIOGRAPHIC
+  COMEDY
+  POLICE
+  DOCUMENTARY
+  DRAMA
+  FAMILY
+  FANTASY
+  FILM_NOIR
+  HISTORIC
+  HORROR
+  MUSICAL
+  MISTERY
+  ROMANCE
+  SCI_FI
+  SHORT_FILM
+  SPORT
+  THRILLER
+  WAR
+  WESTERN
+}
