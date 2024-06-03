@@ -1,7 +1,10 @@
 import { Category } from '@prisma/client';
+import { randomUUID } from 'crypto';
 import { z } from 'nestjs-zod/z';
 
 export const MovieResponseSchema = z.object({
+  id: z.string().default(randomUUID()).describe('Movie Id'),
+  slug: z.string().default('star-wars-episode-i').describe('Movie Slug'),
   title: z.string().default('Star Wars: Episode I').describe('Movie title'),
   plot: z
     .string()
